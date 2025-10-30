@@ -1,0 +1,5 @@
+{
+  "name": "TEST API LZT",
+  "description": "A simple and elegant application to test your lzt.market API token by fetching your profile information. Instantly verify token validity and view your profile data.",
+  "requestFramePermissions": []
+}
