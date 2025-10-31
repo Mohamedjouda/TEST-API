@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import { User, ApiError } from './types.ts';
 import UserProfileCard from './components/UserProfileCard.tsx';
-import { KeyIcon, XCircleIcon, EyeIcon, EyeOffIcon, SparklesIcon } from './components/icons.tsx';
+import { KeyIcon, XCircleIcon, EyeIcon, EyeOffIcon, SparklesIcon, RefreshIcon } from './components/icons.tsx';
 
 const API_BASE_URL = 'https://api.lzt.market';
 
@@ -195,13 +195,22 @@ User Data: ${JSON.stringify(userData, null, 2)}`;
                                     <p className="text-slate-400 text-sm">AI is thinking...</p>
                                 </>
                              ) : (
-                                <button
-                                    onClick={handleAnalyzeProfile}
-                                    className="px-5 py-2.5 bg-purple-600 rounded-lg font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-purple-500 transition-all duration-200 flex items-center justify-center space-x-2"
-                                >
-                                    <SparklesIcon className="h-5 w-5" />
-                                    <span>Analyze with AI</span>
-                                </button>
+                                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                    <button
+                                        onClick={handleAnalyzeProfile}
+                                        className="w-full sm:w-auto px-5 py-2.5 bg-purple-600 rounded-lg font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-purple-500 transition-all duration-200 flex items-center justify-center space-x-2"
+                                    >
+                                        <SparklesIcon className="h-5 w-5" />
+                                        <span>Analyze with AI</span>
+                                    </button>
+                                    <button
+                                        onClick={handleVerifyToken}
+                                        className="w-full sm:w-auto px-5 py-2.5 bg-slate-600/50 border border-slate-500 rounded-lg font-medium text-slate-300 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-slate-500 transition-all duration-200 flex items-center justify-center space-x-2"
+                                    >
+                                        <RefreshIcon className="h-5 w-5" />
+                                        <span>Refresh Data</span>
+                                    </button>
+                                </div>
                              )}
                         </div>
                     )}

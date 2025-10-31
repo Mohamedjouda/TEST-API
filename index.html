@@ -1,41 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TEST API LZT</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      @keyframes fade-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fade-in {
-        animation: fade-in 0.5s ease-out forwards;
-      }
-    </style>
+    <link rel="stylesheet" href="./index.css" />
 <script type="importmap">
 {
   "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0",
     "react": "https://aistudiocdn.com/react@^19.2.0",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0"
+    "vite": "https://aistudiocdn.com/vite@^7.1.12",
+    "process": "https://aistudiocdn.com/process@^0.11.10",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.0"
   }
 }
 </script>
-<!-- Babel for in-browser transpilation of TSX files -->
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="bg-slate-900">
     <div id="root"></div>
-    <!-- 
-      The main application script. 
-      - type="text/babel" tells Babel to process this script.
-      - data-presets tells Babel to use React and TypeScript presets for transpilation.
-      - data-type="module" is passed to the script tag Babel generates, so it can use imports.
-    -->
-    <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>
