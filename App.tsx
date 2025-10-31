@@ -72,7 +72,6 @@ const App: React.FC = () => {
     setAnalysisError(null);
 
     try {
-      // FIX: Adhere to Gemini API guidelines by using process.env.API_KEY.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `You are a helpful assistant for an online marketplace. Based on the following user profile data in JSON format, provide a brief (2-3 sentences), encouraging analysis of their activity and one actionable tip for them to be more successful. Keep the tone friendly and positive. Do not use markdown formatting.
 
@@ -83,7 +82,7 @@ User Data: ${JSON.stringify(userData, null, 2)}`;
           contents: prompt,
       });
 
-      setAnalysis(response.text);
+      setAnalysis(response.text ?? null);
     } catch (e: any) {
       setAnalysisError(e.message || 'Failed to get analysis from AI.');
       console.error(e);
