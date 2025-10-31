@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import { User, ApiError } from './types.ts';
@@ -75,6 +76,7 @@ const App: React.FC = () => {
     setAnalysisState({ status: 'loading' });
 
     try {
+      // FIX: Per @google/genai guidelines, the API key must be sourced from process.env.API_KEY.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const prompt = `You are a helpful assistant for an online marketplace. Based on the following user profile data in JSON format, provide a brief (2-3 sentences), encouraging analysis of their activity and one actionable tip for them to be more successful. Keep the tone friendly and positive. Do not use markdown formatting.
 
@@ -84,7 +86,7 @@ User Data: ${JSON.stringify(profileState.user, null, 2)}`;
           model: 'gemini-2.5-flash',
           contents: prompt,
       });
-      setAnalysisState({ status: 'success', text: response.text });
+      setAnalysisState({ status: 'success', text: response.text ?? 'No analysis was provided.' });
     } catch (e: any) {
       setAnalysisState({ status: 'error', message: e.message || 'Failed to get analysis from AI.' });
       console.error(e);
