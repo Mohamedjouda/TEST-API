@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { User } from '../types';
 
@@ -14,6 +13,21 @@ const InfoRow: React.FC<{ label: string; value: string | number }> = ({ label, v
 );
 
 const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
+  const registrationDate = new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date(user.register_date * 1000));
+
+  const lastActivityDate = new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZoneName: 'short',
+  }).format(new Date(user.last_activity * 1000));
+
   return (
     <div className="bg-slate-800/50 rounded-lg shadow-lg backdrop-blur-sm p-6 w-full animate-fade-in">
       <div className="flex items-center space-x-4 mb-6 pb-4 border-b border-slate-700/50">
@@ -32,8 +46,8 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         <InfoRow label="Hold" value={`${user.hold} ${user.currency.toUpperCase()}`} />
         <InfoRow label="Active Listings" value={user.active_items_count} />
         <InfoRow label="Items Sold" value={user.sold_items_count} />
-        <InfoRow label="Registration Date" value={new Date(user.register_date * 1000).toLocaleDateString()} />
-        <InfoRow label="Last Activity" value={new Date(user.last_activity * 1000).toLocaleString()} />
+        <InfoRow label="Registration Date" value={registrationDate} />
+        <InfoRow label="Last Activity" value={lastActivityDate} />
       </div>
     </div>
   );

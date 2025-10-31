@@ -1,22 +1,31 @@
-
 import React, { useState, useCallback } from 'react';
+import { GoogleGenAI } from "@google/genai";
 import { User, ApiError } from './types';
 import UserProfileCard from './components/UserProfileCard';
-import { KeyIcon, XCircleIcon } from './components/icons';
+import { KeyIcon, XCircleIcon, EyeIcon, EyeOffIcon, SparklesIcon } from './components/icons';
 
 const API_BASE_URL = 'https://api.lzt.market';
 
-const LoadingSpinner: React.FC = () => (
-  <div className="flex justify-center items-center p-4">
-    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-400"></div>
-  </div>
-);
+const LoadingSpinner: React.FC<{ size?: 'sm' | 'md' }> = ({ size = 'md' }) => {
+    const sizeClasses = size === 'sm' ? 'h-5 w-5' : 'h-10 w-10';
+    return (
+        <div className="flex justify-center items-center p-4">
+            <div className={`animate-spin rounded-full border-b-2 border-indigo-400 ${sizeClasses}`}></div>
+        </div>
+    );
+};
 
 const App: React.FC = () => {
   const [token, setToken] = useState<string>('');
+  const [isTokenVisible, setIsTokenVisible] = useState<boolean>(false);
   const [userData, setUserData] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  
+  const [analysis, setAnalysis] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+
 
   const handleVerifyToken = useCallback(async () => {
     if (!token) {
@@ -27,6 +36,8 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setUserData(null);
+    setAnalysis(null);
+    setAnalysisError(null);
 
     try {
       const response = await fetch(`${API_BASE_URL}/me`, {
@@ -53,6 +64,33 @@ const App: React.FC = () => {
     }
   }, [token]);
   
+  const handleAnalyzeProfile = useCallback(async () => {
+    if (!userData) return;
+
+    setIsAnalyzing(true);
+    setAnalysis(null);
+    setAnalysisError(null);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+      const prompt = `You are a helpful assistant for an online marketplace. Based on the following user profile data in JSON format, provide a brief (2-3 sentences), encouraging analysis of their activity and one actionable tip for them to be more successful. Keep the tone friendly and positive. Do not use markdown formatting.
+
+User Data: ${JSON.stringify(userData, null, 2)}`;
+
+      const response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: prompt,
+      });
+
+      setAnalysis(response.text);
+    } catch (e: any) {
+      setAnalysisError(e.message || 'Failed to get analysis from AI.');
+      console.error(e);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }, [userData]);
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
         handleVerifyToken();
@@ -67,7 +105,7 @@ const App: React.FC = () => {
             TEST API LZT
           </h1>
           <p className="mt-2 text-slate-400">
-            Verify your Lolzteam Market API token by fetching your profile.
+            Verify your Lolzteam Market API token and get AI-powered insights.
           </p>
         </header>
 
@@ -78,13 +116,22 @@ const App: React.FC = () => {
                 <KeyIcon />
               </span>
               <input
-                type="password"
+                type={isTokenVisible ? "text" : "password"}
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Enter your API Token"
-                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition duration-200"
+                aria-label="API Token"
+                className="w-full pl-10 pr-10 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition duration-200"
               />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                onClick={() => setIsTokenVisible(!isTokenVisible)}
+                aria-label={isTokenVisible ? "Hide token" : "Show token"}
+              >
+                {isTokenVisible ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
             </div>
             <button
               onClick={handleVerifyToken}
@@ -121,6 +168,45 @@ const App: React.FC = () => {
               </div>
             )}
           </div>
+            
+            {userData && !isLoading && (
+                 <div className="mt-6 border-t border-slate-700/50 pt-6">
+                     {analysis ? (
+                        <div className="bg-slate-800/50 rounded-lg p-6 w-full animate-fade-in space-y-3">
+                            <h3 className="text-lg font-semibold text-indigo-400 flex items-center gap-2">
+                                <SparklesIcon className="h-5 w-5" />
+                                AI Analysis
+                            </h3>
+                            <p className="text-slate-300 leading-relaxed">{analysis}</p>
+                        </div>
+                    ) : analysisError ? (
+                         <div className="bg-red-900/20 border border-red-500/30 text-red-300 px-4 py-3 rounded-lg w-full flex items-start space-x-3 animate-fade-in">
+                            <XCircleIcon />
+                            <div>
+                                <p className="font-bold">AI Analysis Failed</p>
+                                <p className="text-sm mt-1">{analysisError}</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center">
+                             {isAnalyzing ? (
+                                <>
+                                    <LoadingSpinner size="sm" />
+                                    <p className="text-slate-400 text-sm">AI is thinking...</p>
+                                </>
+                             ) : (
+                                <button
+                                    onClick={handleAnalyzeProfile}
+                                    className="px-5 py-2.5 bg-purple-600 rounded-lg font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-purple-500 transition-all duration-200 flex items-center justify-center space-x-2"
+                                >
+                                    <SparklesIcon className="h-5 w-5" />
+                                    <span>Analyze with AI</span>
+                                </button>
+                             )}
+                        </div>
+                    )}
+                 </div>
+            )}
         </main>
         
         <footer className="text-center mt-8 text-slate-500 text-xs">
