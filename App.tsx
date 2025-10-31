@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { User, ApiError } from './types';
-import UserProfileCard from './components/UserProfileCard';
-import { KeyIcon, XCircleIcon, EyeIcon, EyeOffIcon, SparklesIcon } from './components/icons';
+import { User, ApiError } from './types.ts';
+import UserProfileCard from './components/UserProfileCard.tsx';
+import { KeyIcon, XCircleIcon, EyeIcon, EyeOffIcon, SparklesIcon } from './components/icons.tsx';
 
 const API_BASE_URL = 'https://api.lzt.market';
 
