@@ -6,9 +6,9 @@ interface UserProfileCardProps {
 }
 
 const InfoRow: React.FC<{ label: string; value: string | number }> = ({ label, value }) => (
-  <div className="flex justify-between items-center py-3 border-b border-slate-700/50 last:border-b-0">
-    <p className="text-sm text-slate-400">{label}</p>
-    <p className="text-sm font-medium text-slate-200 text-right">{value}</p>
+  <div className="flex justify-between items-center py-3 border-b border-white/10 last:border-b-0">
+    <p className="text-sm text-gray-400">{label}</p>
+    <p className="text-sm font-medium text-gray-200 text-right">{value}</p>
   </div>
 );
 
@@ -29,16 +29,18 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
   }).format(new Date(user.last_activity * 1000));
 
   return (
-    <div className="bg-slate-800/50 rounded-lg shadow-lg backdrop-blur-sm p-6 w-full animate-fade-in">
-      <div className="flex items-center space-x-4 mb-6 pb-4 border-b border-slate-700/50">
-        <img
-          className="h-16 w-16 rounded-full border-2 border-indigo-500 object-cover"
-          src={user.rendered.avatars.l}
-          alt={`${user.username}'s avatar`}
-        />
+    <div className="bg-black/20 rounded-lg shadow-lg p-4 sm:p-6 w-full animate-fade-in">
+      <div className="flex flex-col sm:flex-row items-center text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-4 mb-6 pb-4 border-b border-white/10">
+        <div className="relative p-1 rounded-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500">
+          <img
+            className="h-20 w-20 rounded-full border-2 border-gray-800 object-cover"
+            src={user.rendered.avatars.l}
+            alt={`${user.username}'s avatar`}
+          />
+        </div>
         <div>
           <h2 className="text-xl font-bold text-white">{user.username}</h2>
-          <p className="text-sm text-slate-400">User ID: {user.user_id}</p>
+          <p className="text-sm text-gray-400">User ID: {user.user_id}</p>
         </div>
       </div>
       <div className="space-y-1">

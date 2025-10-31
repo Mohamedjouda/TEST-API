@@ -1,4 +1,3 @@
-
 // Based on components.schemas.UserModel from the OpenAPI spec
 export interface User {
   user_id: number;
