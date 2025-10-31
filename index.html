@@ -25,8 +25,17 @@
   }
 }
 </script>
+<!-- Babel for in-browser transpilation of TSX files -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body class="bg-slate-900">
     <div id="root"></div>
+    <!-- 
+      The main application script. 
+      - type="text/babel" tells Babel to process this script.
+      - data-presets tells Babel to use React and TypeScript presets for transpilation.
+      - data-type="module" is passed to the script tag Babel generates, so it can use imports.
+    -->
+    <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
 </body>
 </html>
